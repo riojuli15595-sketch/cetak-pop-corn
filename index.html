@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Cetak POP Universal (Harga Besar)</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #eef2f5; margin: 0; padding: 20px; display: flex; gap: 20px; }
+        .no-print { display: block; } .only-print { display: none; }
+        .control-panel { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 320px; position: sticky; top: 20px; }
+        .control-panel h2 { margin-top: 0; font-size: 18px; color: #2c3e50; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 12px; color: #34495e; }
+        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 14px; }
+        .btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+        button { border: none; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; color: white; }
+        .btn-add { background-color: #3498db; } .btn-print { background-color: #2ecc71; } .btn-clear { background-color: #e74c3c; }
+        .preview-area { background: white; width: 210mm; min-height: 297mm; box-shadow: 0 0 15px rgba(0,0,0,0.15); display: grid; grid-template-columns: repeat(2, 105mm); grid-auto-rows: 74.25mm; align-content: start; }
+        
+        .pop-label { width: 105mm; height: 74.25mm; box-sizing: border-box; padding: 4mm; border-right: 1px dashed #ccc; border-bottom: 1px dashed #ccc; position: relative; background: #fff; background-image: radial-gradient(#e0e0e0 1px, transparent 1px); background-size: 4px 4px; display: flex; flex-direction: column; overflow: hidden; }
+        .pop-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2px; height: 18px; }
+        .logo-alfa { font-family: 'Arial Black', sans-serif; font-size: 18px; font-style: italic; font-weight: 900; letter-spacing: -0.5px; }
+        .logo-alfa .blue { color: #00529C; } .logo-alfa .red { color: #ED1C24; }
+        
+        .pop-body { 
+    border: 2px solid #222; 
+    border-radius: 10px; 
+    flex-grow: 1; 
+    background: #fff; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start; /* Ubah dari center ke flex-start */
+    padding-top: 15px;           /* Tambahkan jarak di bagian atas */
+    position: relative; 
+}
+        .merek { font-family: 'Impact', sans-serif; font-size: 40px; line-height: 1; margin: 0; text-transform: uppercase; color: #222; }
+        .keterangan { 
+    font-size: 18px;          /* Ukuran diperbesar dari 11px/12px agar lebih terbaca */
+    font-weight: 900;         /* Dibuat paling tebal (bold) */
+    text-transform: uppercase; 
+    text-align: center; 
+    color: #000;              /* Hitam pekat */
+    margin-bottom: 8px;       /* Memberi jarak sedikit dengan harga coret */
+    line-height: 1.2;
+}
+        
+        /* Bagian Harga Coret Diperbesar */
+        .harga-coret-wrapper { position: relative; display: inline-block; margin-bottom: 2px; }
+        .harga-coret { 
+    font-size: 30px;          /* Ukuran diperbesar agar lebih mudah terbaca */
+    font-weight: 900;         /* Dibuat paling tebal */
+    color: #000;              /* Hitam pekat */
+    border-bottom: 4px solid #000; /* Mengganti garis coret dengan garis solid tebal */
+    padding-bottom: 2px;
+}
+        .coretan { position: absolute; top: 50%; left: -10%; width: 120%; height: 3px; background-color: rgba(0,0,0,0.8); transform: rotate(-8deg); }
+        
+        /* Bagian Harga Promo Diperbesar */
+        .harga-promo-box { background: #2a2a2a; color: #fff; border-radius: 10px; padding: 0px 15px; display: flex; align-items: flex-start; gap: 4px; }
+        .rp-text { font-size: 18px; font-weight: bold; margin-top: 8px; }
+        .promo-value { font-family: 'Impact', sans-serif; font-size: 60px; line-height: 1.1; letter-spacing: 1px; }
+        .satuan-text { font-weight: 900; font-size: 30px; margin-left: 5px; }
+        
+        .periode { font-size: 15px; font-weight: bold; margin-top: auto; margin-bottom: 2px; color: #222; }
+        .footer-pattern { position: absolute; bottom: 0; left: 0; width: 100%; height: 6px; background: repeating-linear-gradient(45deg, #222, #222 3px, #fff 3px, #fff 6px); border-top: 1px solid #222; }
+        
+        @media print { @page { size: A4; margin: 0; } body { margin: 0; padding: 0; background: white; } .no-print { display: none !important; } .preview-area { box-shadow: none; width: 210mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    </style>
+</head>
+<body>
+    <div class="control-panel no-print">
+        <h2>🏷️ Aplikasi Cetak POP</h2>
+        <p style="font-size: 12px; color: #7f8c8d; margin-top:-10px;">Versi Universal (Harga Besar)</p>
+        <div class="form-group"><label>Merek Utama:</label><input type="text" id="inMerek" placeholder="APLE"></div>
+        <div class="form-group"><label>Keterangan Lengkap:</label><input type="text" id="inKeterangan" placeholder="GREEN APPLE 125G"></div>
+        <div class="form-group"><label>Harga Normal:</label><input type="text" id="inCoret" placeholder="10.400"></div>
+        <div class="form-group"><label>Harga Promo:</label><input type="text" id="inPromo" placeholder="8.900"></div>
+        <div class="form-group"><label>Satuan:</label><input type="text" id="inSatuan" placeholder="/2pcs"></div>
+        <div class="form-group"><label>Periode Promo:</label><input type="text" id="inPeriode" value="16 - 23 Juli 2026"></div>
+        <div class="btn-group">
+            <button class="btn-add" onclick="tambahLabel()">➕ Tambah ke Daftar</button>
+            <button class="btn-print" onclick="window.print()">🖨️ Cetak A4 Sekarang</button>
+            <button class="btn-clear" onclick="hapusSemua()">🗑️ Bersihkan Kertas</button>
+        </div>
+    </div>
+    <div class="preview-area" id="kertasA4"></div>
+    <script>
+        function tambahLabel() {
+            const merek = document.getElementById('inMerek').value || 'MEREK';
+            const keterangan = document.getElementById('inKeterangan').value || 'Keterangan';
+            const coret = document.getElementById('inCoret').value || '0';
+            const promo = document.getElementById('inPromo').value || '0';
+  	        const sat = document.getElementById('inSatuan').value; // Mengambil nilai dari input satuan
+            const periode = document.getElementById('inPeriode').value || '-';
+
+            if(document.querySelectorAll('.pop-label').length >= 8) { alert("Penuh! Maksimal 8 label per kertas A4."); return; }
+            const labelHTML = `<div class="pop-label"><div class="pop-header"><div class="logo-alfa"><span class="blue">Alfa</span><span class="red">mart</span></div></div><div class="pop-body"><div class="merek">${merek}</div><div class="keterangan">${keterangan}</div><div class="harga-coret-wrapper"><span class="harga-coret">Rp ${coret}</span><div class="coretan"></div></div><div class="harga-promo-box"><span class="rp-text">Rp</span><span class="promo-value">${promo}</span><span class="satuan-text">${sat}</span></div><div class="periode">Periode: ${periode}</div></div><div class="footer-pattern"></div></div>`;
+            document.getElementById('kertasA4').insertAdjacentHTML('beforeend', labelHTML);
+        }
+        function hapusSemua() { document.getElementById('kertasA4').innerHTML = ''; }
+        window.onload = function() { document.getElementById('inMerek').value = 'APLE'; document.getElementById('inKeterangan').value = 'GREEN APLE 125G'; document.getElementById('inCoret').value = '10.400'; document.getElementById('inPromo').value = '8.900'; tambahLabel(); }
+    </script>
+</body>
+</html>
